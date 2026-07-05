@@ -556,6 +556,8 @@ export default function LandingPage({ user, onLogout }: LandingPageProps) {
                                 <Tooltip
                                   formatter={(value: any) => [`${value}%`, 'Attribution Weight']}
                                   contentStyle={{ background: '#0f172a', borderRadius: '12px', border: 'none', color: '#fff', fontSize: '11px' }}
+                                  itemStyle={{ color: '#fff' }}
+                                  labelStyle={{ color: '#94a3b8', fontWeight: 'bold' }}
                                 />
                                 <Bar dataKey="Percentage" radius={[0, 4, 4, 0]}>
                                   {analytics.featureImportance.map((entry, index) => {
@@ -618,7 +620,11 @@ export default function LandingPage({ user, onLogout }: LandingPageProps) {
                                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                                 <XAxis dataKey="name" fontSize={10} fontWeight="bold" tickLine={false} stroke="#64748b" />
                                 <YAxis domain={[50, 100]} fontSize={10} tickLine={false} unit="%" />
-                                <Tooltip contentStyle={{ background: '#0f172a', borderRadius: '12px', border: 'none', color: '#fff', fontSize: '11px' }} />
+                                <Tooltip 
+                                  contentStyle={{ background: '#0f172a', borderRadius: '12px', border: 'none', color: '#fff', fontSize: '11px' }} 
+                                  itemStyle={{ color: '#fff' }}
+                                  labelStyle={{ color: '#94a3b8', fontWeight: 'bold' }}
+                                />
                                 <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '10px', fontWeight: 'bold', paddingBottom: '10px' }} />
                                 <Bar dataKey="Accuracy" fill="#4f46e5" radius={[4, 4, 0, 0]} />
                                 <Bar dataKey="Precision" fill="#10b981" radius={[4, 4, 0, 0]} />
@@ -655,7 +661,12 @@ export default function LandingPage({ user, onLogout }: LandingPageProps) {
                                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                                 <XAxis dataKey="fpr" type="number" domain={[0, 1]} tickCount={6} fontSize={10} stroke="#64748b" label={{ value: 'False Positive Rate (FPR)', position: 'insideBottom', offset: -10, fontSize: 10, fontWeight: 'bold', fill: '#475569' }} />
                                 <YAxis type="number" domain={[0, 1]} tickCount={6} fontSize={10} stroke="#64748b" label={{ value: 'True Positive Rate (TPR)', angle: -90, position: 'insideLeft', offset: 15, fontSize: 10, fontWeight: 'bold', fill: '#475569' }} />
-                                <Tooltip formatter={(value: any) => [Number(value).toFixed(2), 'Rate']} contentStyle={{ background: '#0f172a', borderRadius: '12px', border: 'none', color: '#fff', fontSize: '11px' }} />
+                                <Tooltip 
+                                  formatter={(value: any) => [Number(value).toFixed(2), 'Rate']} 
+                                  contentStyle={{ background: '#0f172a', borderRadius: '12px', border: 'none', color: '#fff', fontSize: '11px' }} 
+                                  itemStyle={{ color: '#fff' }}
+                                  labelStyle={{ color: '#94a3b8', fontWeight: 'bold' }}
+                                />
                                 {/* Baseline Random Classifier Line */}
                                 <Line type="monotone" dataKey="fpr" stroke="#94a3b8" strokeDasharray="5 5" dot={false} strokeWidth={1} />
                                 {/* Actual Classifier Area */}
@@ -689,7 +700,11 @@ export default function LandingPage({ user, onLogout }: LandingPageProps) {
                                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                                 <XAxis dataKey="run" fontSize={10} fontWeight="bold" stroke="#64748b" label={{ value: 'Retraining Run ID', position: 'insideBottom', offset: -10, fontSize: 10, fontWeight: 'bold', fill: '#475569' }} />
                                 <YAxis domain={[80, 95]} fontSize={10} stroke="#64748b" unit="%" label={{ value: 'Accuracy Score (%)', angle: -90, position: 'insideLeft', offset: 15, fontSize: 10, fontWeight: 'bold', fill: '#475569' }} />
-                                <Tooltip contentStyle={{ background: '#0f172a', borderRadius: '12px', border: 'none', color: '#fff', fontSize: '11px' }} />
+                                <Tooltip 
+                                  contentStyle={{ background: '#0f172a', borderRadius: '12px', border: 'none', color: '#fff', fontSize: '11px' }} 
+                                  itemStyle={{ color: '#fff' }}
+                                  labelStyle={{ color: '#94a3b8', fontWeight: 'bold' }}
+                                />
                                 <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '10px', fontWeight: 'bold', paddingBottom: '10px' }} />
                                 <Line type="monotone" dataKey="Accuracy" stroke="#4f46e5" strokeWidth={3} activeDot={{ r: 8 }} />
                                 <Line type="monotone" dataKey="AUC" stroke="#ec4899" strokeWidth={2} />
