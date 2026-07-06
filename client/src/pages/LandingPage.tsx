@@ -291,9 +291,9 @@ export default function LandingPage({ user, onLogout }: LandingPageProps) {
         {/* Value Proposition Grid */}
         <div className="space-y-6">
           <div className="space-y-2">
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900">Platform Features & Future Roadmap</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900">Platform Features & Core Capabilities</h2>
             <p className="text-slate-500 text-sm max-w-xl">
-              A state-of-the-art framework designed for HR analytics experts, software architects, and machine learning practitioners.
+              A production-ready framework designed for HR analytics experts, software architects, and machine learning practitioners.
             </p>
           </div>
 
@@ -305,10 +305,10 @@ export default function LandingPage({ user, onLogout }: LandingPageProps) {
               </div>
               <h3 className="text-lg font-bold text-slate-900">Explainable Predictive Engine</h3>
               <p className="text-slate-600 text-sm leading-relaxed">
-                Utilizes Random Forests and Gradient Boosted Models (Scikit-Learn) to calculate precise risk margins per employee with full feature attribution.
+                Utilizes a backend pipeline evaluating multiple candidate architectures (XGBoost, Random Forest, Gradient Boosting, Logistic Regression) to deploy the absolute best-performing classifier.
               </p>
-              <span className="inline-flex items-center text-xs text-indigo-600 bg-indigo-50 font-medium px-2.5 py-0.5 rounded-full">
-                Phase 2 Target
+              <span className="inline-flex items-center text-xs text-emerald-600 bg-emerald-50 font-medium px-2.5 py-0.5 rounded-full">
+                Production Active
               </span>
             </div>
 
@@ -319,10 +319,10 @@ export default function LandingPage({ user, onLogout }: LandingPageProps) {
               </div>
               <h3 className="text-lg font-bold text-slate-900">What-If Factor Tuning</h3>
               <p className="text-slate-600 text-sm leading-relaxed">
-                Provides real-time interactive parameter adjustments (monthly salary, satisfaction scores, overtime) to forecast cost-effective retention paths.
+                Provides real-time interactive parameter adjustments (monthly salary, satisfaction scores, overtime) in our Sandbox environment to forecast cost-effective retention paths.
               </p>
               <span className="inline-flex items-center text-xs text-emerald-600 bg-emerald-50 font-medium px-2.5 py-0.5 rounded-full">
-                Demo Active in Profile!
+                Active in Sandbox
               </span>
             </div>
 
@@ -333,10 +333,10 @@ export default function LandingPage({ user, onLogout }: LandingPageProps) {
               </div>
               <h3 className="text-lg font-bold text-slate-900">Durable MongoDB Storage</h3>
               <p className="text-slate-600 text-sm leading-relaxed">
-                Structured database integration logging historical evaluations, feature importance changes, and administrator auditing activities securely.
+                Robust database integration logging and persisting user configurations, uploaded workforce dataset metadata, and active machine learning model sessions.
               </p>
-              <span className="inline-flex items-center text-xs text-slate-600 bg-slate-100 font-medium px-2.5 py-0.5 rounded-full">
-                Configured & Ready
+              <span className="inline-flex items-center text-xs text-emerald-600 bg-emerald-50 font-medium px-2.5 py-0.5 rounded-full">
+                Configured & Active
               </span>
             </div>
           </div>

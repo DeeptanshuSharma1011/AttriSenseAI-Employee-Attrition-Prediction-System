@@ -167,7 +167,7 @@ export default function App() {
               <span>AttriSense AI Enterprise Prediction Framework — Operational Pipeline Active</span>
             </div>
             <div>
-              <span>Clean Architecture Paradigm &copy; {new Date().getFullYear()}</span>
+              <span>AttriSense AI &copy; {new Date().getFullYear()} </span>
             </div>
           </div>
         </footer>
