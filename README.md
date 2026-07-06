@@ -175,8 +175,8 @@ This is the standard industry practice. By separating the static frontend from t
 #### 📦 Service 1: React Frontend (Static Site)
 * **Service Type:** Static Site
 * **Build Command:** `npm install && npm run build`
-* **Publish Directory:** `client/dist`
-* **Root Directory:** `client`
+* **Publish Directory:** `dist`
+* **Root Directory:** *[Leave empty]* (Do NOT use `client` as Root Directory because `package.json` is at the repository root!)
 * **Environment Variables:**
   * `VITE_API_BASE_URL`: Set this to your Backend Web Service URL (e.g., `https://attrisense-api.onrender.com`)
 
