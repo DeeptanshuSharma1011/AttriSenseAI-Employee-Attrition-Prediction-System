@@ -657,19 +657,30 @@ export const analyticsService = {
  * 5. TRAINING & MODEL MANAGEMENT SERVICE
  */
 export const trainingService = {
-  async triggerTraining(datasetId: string, modelType: string = 'xgboost'): Promise<TrainingSummary> {
+  async triggerTraining(datasetId: string, modelType?: string): Promise<TrainingSummary> {
     await delay(2500); // realistic intensive training simulation
 
-    const timestamp = new Date().toISOString().split('T')[0];
-    const newAccuracy = 0.892 + Math.round((Math.random() * 0.015 - 0.005) * 1000) / 1000;
-    const newAuc = 0.915 + Math.round((Math.random() * 0.012 - 0.003) * 1000) / 1000;
+    // Automatically evaluate all candidate models behind the scenes
+    const candidateModels = [
+      { name: 'XGBoost', accuracy: 0.890 + Math.round((Math.random() * 0.02) * 1000) / 1000, auc: 0.912 + Math.round((Math.random() * 0.015) * 1000) / 1000 },
+      { name: 'Random Forest', accuracy: 0.872 + Math.round((Math.random() * 0.015) * 1000) / 1000, auc: 0.892 + Math.round((Math.random() * 0.015) * 1000) / 1000 },
+      { name: 'Gradient Boosting', accuracy: 0.878 + Math.round((Math.random() * 0.018) * 1000) / 1000, auc: 0.901 + Math.round((Math.random() * 0.015) * 1000) / 1000 },
+      { name: 'Logistic Regression', accuracy: 0.842 + Math.round((Math.random() * 0.01) * 1000) / 1000, auc: 0.852 + Math.round((Math.random() * 0.01) * 1000) / 1000 }
+    ];
+
+    // Select the absolute best-performing algorithm automatically
+    const bestCandidate = candidateModels.reduce((best, current) => current.accuracy > best.accuracy ? current : best, candidateModels[0]);
+
+    const newAccuracy = bestCandidate.accuracy;
+    const newAuc = bestCandidate.auc;
+    const bestModelName = bestCandidate.name;
 
     const summary: TrainingSummary = {
       success: true,
-      bestModel: `${modelType.toUpperCase()} Estimator (v${Math.floor(Math.random() * 2) + 2}.${Math.floor(Math.random() * 9) + 1}.0)`,
+      bestModel: `${bestModelName} Estimator (v${Math.floor(Math.random() * 2) + 2}.${Math.floor(Math.random() * 9) + 1}.0)`,
       trainingTimeSec: 4.82,
       metrics: {
-        name: modelType.toUpperCase(),
+        name: bestModelName,
         accuracy: newAccuracy,
         precision: newAccuracy - 0.02,
         recall: newAccuracy - 0.04,
@@ -677,7 +688,7 @@ export const trainingService = {
         auc: newAuc,
       },
       accuracyImproved: newAccuracy > 0.892,
-      message: `Model retraining pipeline execution finalized using data reference ${datasetId}. Out-of-bag validation completed successfully.`,
+      message: `Evaluated candidate architectures automatically. XGBoost, Random Forest, Gradient Boosting, and Logistic Regression were scored. Deployed the absolute best-performing architecture: ${bestModelName} (${(newAccuracy * 100).toFixed(1)}% Validation Accuracy).`,
     };
 
     // Persist new model in models array
@@ -687,7 +698,7 @@ export const trainingService = {
     
     models.unshift({
       id: `model_${Date.now()}`,
-      name: `${modelType.toUpperCase()} Attrition Predictor`,
+      name: `${bestModelName} Attrition Predictor`,
       version: `v2.${Math.floor(Math.random() * 10)}.${Math.floor(Math.random() * 10)}`,
       accuracy: newAccuracy,
       trainedAt: new Date().toISOString(),

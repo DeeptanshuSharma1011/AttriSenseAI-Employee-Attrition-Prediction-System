@@ -168,11 +168,12 @@ export default function LandingPage({ user, onLogout }: LandingPageProps) {
 
     // Progress simulation logs
     const stages = [
-      { progress: 15, msg: 'Loading CSV frame & parsing HR headers...' },
-      { progress: 35, msg: 'Validating target class "Attrition" balance ratio...' },
-      { progress: 55, msg: 'Constructing k-fold splits (80/20 train/test)...' },
-      { progress: 75, msg: `Fitting ${estimators} estimator trees (Max Depth: ${maxDepth})...` },
-      { progress: 90, msg: 'Calculating feature importances & ROC thresholds...' },
+      { progress: 10, msg: 'Loading CSV frame & parsing HR headers...' },
+      { progress: 25, msg: 'Evaluating Candidate 1: Logistic Regression baseline...' },
+      { progress: 45, msg: 'Evaluating Candidate 2: Random Forest consensus forest...' },
+      { progress: 65, msg: 'Evaluating Candidate 3: Gradient Boosting sequence trees...' },
+      { progress: 85, msg: 'Evaluating Candidate 4: XGBoost hyper-optimized classifier...' },
+      { progress: 95, msg: 'Identifying best-performing algorithm and deploying behind the scenes...' },
     ];
 
     for (const stage of stages) {
@@ -182,12 +183,12 @@ export default function LandingPage({ user, onLogout }: LandingPageProps) {
     }
 
     try {
-      const result = await trainingService.triggerTraining(selectedDatasetId, selectedModelType);
+      const result = await trainingService.triggerTraining(selectedDatasetId);
       setRetrainProgress(100);
       setRetrainStatus('Model compiled! Registering version in active pipeline...');
       await new Promise(resolve => setTimeout(resolve, 350));
 
-      showToast(` Retraining Success: Accuracy Improved to ${(result.metrics.accuracy * 100).toFixed(1)}%!`, 'success');
+      showToast(` Retraining Success: Accuracy Improved to ${(result.metrics.accuracy * 100).toFixed(1)}%! Deployed top model ${result.metrics.name}.`, 'success');
       
       // Update models list
       const freshModels = trainingService.getSavedModels();
@@ -196,11 +197,12 @@ export default function LandingPage({ user, onLogout }: LandingPageProps) {
       // Dynamically adjust metrics in local state to visualize the training improvement
       if (analytics) {
         const updatedComparison = analytics.modelComparison.map(m => {
-          const matchXg = selectedModelType === 'xgboost' && m.name.toLowerCase().includes('xgboost');
-          const matchRf = selectedModelType === 'random_forest' && m.name.toLowerCase().includes('random');
-          const matchGb = selectedModelType === 'gradient_boosting' && m.name.toLowerCase().includes('gradient');
+          const isMatch = m.name.toLowerCase().includes(result.metrics.name.toLowerCase()) ||
+                          (result.metrics.name.toLowerCase().includes('random') && m.name.toLowerCase().includes('random')) ||
+                          (result.metrics.name.toLowerCase().includes('gradient') && m.name.toLowerCase().includes('gradient')) ||
+                          (result.metrics.name.toLowerCase().includes('xgboost') && m.name.toLowerCase().includes('xgboost'));
           
-          if (matchXg || matchRf || matchGb) {
+          if (isMatch) {
             return {
               ...m,
               accuracy: result.metrics.accuracy,
@@ -219,7 +221,7 @@ export default function LandingPage({ user, onLogout }: LandingPageProps) {
           trainedAt: new Date().toLocaleDateString(),
           accuracy: result.metrics.accuracy,
           auc: result.metrics.auc,
-          modelType: selectedModelType.toUpperCase()
+          modelType: result.metrics.name.toUpperCase()
         };
 
         // Slightly tweak feature importance to simulate real stochastic weights shifting
@@ -860,7 +862,7 @@ export default function LandingPage({ user, onLogout }: LandingPageProps) {
                 <div className="space-y-1">
                   <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-1.5">
                     <Cpu className="h-4.5 w-4.5 text-emerald-600" />
-                    Model Training Pipeline (Phase 2)
+                    Model Retraining Control Center
                   </h3>
                   <p className="text-xs text-slate-500 leading-relaxed">
                     Improve risk-prediction accuracy by training our virtual decision forest. We have simplified complex machine learning parameters into clear HR goals.
@@ -893,23 +895,22 @@ export default function LandingPage({ user, onLogout }: LandingPageProps) {
                     </select>
                   </div>
 
-                  {/* Select Algorithm */}
+                  {/* Auto-Evaluation Info Banner */}
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-600 uppercase tracking-wider block" htmlFor="retrainAlgo">
+                    <label className="text-[10px] font-bold text-slate-600 uppercase tracking-wider block">
                       2. AI Model Strategy
                     </label>
-                    <p className="text-[10px] text-slate-400">The mathematical logic used to find patterns of retention risk.</p>
-                    <select
-                      id="retrainAlgo"
-                      className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:border-emerald-500 focus:bg-white transition font-medium text-slate-800"
-                      value={selectedModelType}
-                      onChange={(e) => setSelectedModelType(e.target.value)}
-                      disabled={isRetraining}
-                    >
-                      <option value="xgboost">Extreme Gradient Boosting (Recommended: best overall precision)</option>
-                      <option value="random_forest">Random Forest (Stable consensus: great for small teams)</option>
-                      <option value="gradient_boosting">Gradient Boosting (Steady progression: looks deeply at difficult cases)</option>
-                    </select>
+                    <div className="bg-emerald-50/60 border border-emerald-100 p-3 rounded-xl flex items-start gap-2.5">
+                      <Cpu className="h-4.5 w-4.5 text-emerald-600 shrink-0 mt-0.5" />
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">
+                          Multi-Algorithm Auto-Evaluation Active
+                        </span>
+                        <p className="text-[10px] text-slate-500 leading-normal">
+                          The backend automatically trains and evaluates four candidate models (XGBoost, Random Forest, Gradient Boosting, Logistic Regression) on your selected dataset, and deploys the absolute best performer.
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
                   {/* HR Training Mode Preset Selector */}
