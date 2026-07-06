@@ -4,7 +4,7 @@ SPDX-License-Identifier: Apache-2.0
 """
 
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from config.settings import Config
@@ -16,7 +16,13 @@ from routes.dataset_routes import dataset_bp
 
 def create_app():
     """Application factory pattern to configure and initialize the Flask server."""
-    app = Flask(__name__)
+    # Resolve the path for serving the static React client if compiled
+    static_folder_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "client", "dist"))
+    
+    if os.path.exists(static_folder_path):
+        app = Flask(__name__, static_folder=static_folder_path, static_url_path="/")
+    else:
+        app = Flask(__name__)
 
     # Load environmental configurations
     app.config.from_object(Config)
@@ -64,6 +70,15 @@ def create_app():
             ),
             500,
         )
+
+    # If the static client is compiled, register catch-all route to serve React app
+    if os.path.exists(static_folder_path):
+        @app.route("/", defaults={"path": ""})
+        @app.route("/<path:path>")
+        def serve_react(path):
+            if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+                return send_from_directory(app.static_folder, path)
+            return send_from_directory(app.static_folder, "index.html")
 
     return app
 

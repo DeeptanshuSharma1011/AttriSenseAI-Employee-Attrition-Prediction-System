@@ -117,9 +117,10 @@ AttriSense-AI/
 ### 1. Frontend Client Workspace (React)
 The frontend contains an interactive local-storage API simulator. This ensures that the Live Preview is fully responsive, validating the user journey even if local python processes or databases are not running on your container environment.
 
-To run the frontend:
+To run the frontend locally:
 ```bash
-# From the root directory:
+# Navigate to the client folder:
+cd client
 npm install
 npm run dev
 ```
@@ -128,7 +129,7 @@ The client compiles and serves on `http://localhost:3000`.
 ---
 
 ### 2. Backend Server Workspace (Flask)
-To boot up the Python REST API server, perform the following steps:
+To boot up the Python REST API server locally, perform the following steps:
 
 ```bash
 # Navigate to the server folder
@@ -138,8 +139,8 @@ cd server
 python3 -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Install Flask, MongoDB, and cryptography libraries
-pip install flask flask-cors pymongo pyjwt passlib
+# Install Flask, MongoDB, and machine learning libraries
+pip install -r requirements.txt
 
 # Set environment variables for local testing
 export FLASK_ENV=development
@@ -161,6 +162,52 @@ To boot MongoDB locally:
 # Using Docker
 docker run -d -p 27017:27017 --name attrisense-mongo mongo:latest
 ```
+
+---
+
+## ☁️ Production Deployment on Render
+
+You can easily deploy your connected GitHub repository to Render. You have two excellent options depending on your preference for cost, performance, and architecture:
+
+### 🌟 Option A: Decoupled Deployments (Recommended & Free-Tier Friendly)
+This is the standard industry practice. By separating the static frontend from the dynamic API server, you leverage Render's **Free Static Sites** (which are served via ultra-fast global CDNs and never sleep) and only spin up a single Python Web Service for the backend.
+
+#### 📦 Service 1: React Frontend (Static Site)
+* **Service Type:** Static Site
+* **Build Command:** `npm install && npm run build`
+* **Publish Directory:** `client/dist`
+* **Root Directory:** `client`
+* **Environment Variables:**
+  * `VITE_API_BASE_URL`: Set this to your Backend Web Service URL (e.g., `https://attrisense-api.onrender.com`)
+
+#### ⚙️ Service 2: Flask Backend (Web Service)
+* **Service Type:** Web Service
+* **Language/Runtime:** `Python`
+* **Build Command:** `pip install -r requirements.txt`
+* **Start Command:** `gunicorn "app:create_app()"`
+* **Root Directory:** `server`
+* **Environment Variables:**
+  * `SECRET_KEY`: *[Your secret JWT key string]*
+  * `MONGO_URI`: *[Your MongoDB Atlas Connection URI]*
+  * `JWT_SECRET_KEY`: *[Your secret JWT signing key]*
+  * `FLASK_ENV`: `production`
+
+---
+
+### 🐳 Option B: Unified Full-Stack Service (Monolith via Docker)
+If you prefer to deploy everything under **one single URL and service**, you can use a unified Docker-based Render service. This compiles your React assets and serves them directly through Flask's static assets router (configured inside `server/app.py`).
+
+To deploy as a single service, simply choose the **Docker** runtime on Render:
+* **Service Type:** Web Service
+* **Language/Runtime:** `Docker`
+* **Root Directory:** Leave empty (root `/` of repo)
+* **Environment Variables:**
+  * `SECRET_KEY`: *[Your secret JWT key string]*
+  * `MONGO_URI`: *[Your MongoDB Atlas Connection URI]*
+  * `JWT_SECRET_KEY`: *[Your secret JWT signing key]*
+  * `FLASK_ENV`: `production`
+
+Render will automatically detect the root `Dockerfile` and build both the React frontend and Python backend into a single consolidated image, running the entire application on one single port!
 
 ---
 
